@@ -4,8 +4,10 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>DocMind Vật Lý — Thầy Hạ Tuấn Anh</title>
+<!-- Google APIs -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://apis.google.com/js/api.js" async defer></script>
 <style>
-/* ══ RESET & TOKENS ══════════════════════════════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,'Segoe UI','Helvetica Neue',sans-serif}
 :root{
   --s50:#F0FDF4;--s100:#DCFCE7;--s200:#BBF7D0;--s300:#86EFAC;
@@ -13,11 +15,11 @@
   --s800:#166534;--s900:#14532D;
   --white:#fff;--gray50:#f9fafb;--gray100:#f3f4f6;--gray200:#e5e7eb;
   --gray400:#9ca3af;--gray500:#6b7280;--gray700:#374151;
-  --blue50:#EFF6FF;--blue600:#2563EB;--blue800:#1E40AF;
-  --purple50:#F5F3FF;--purple600:#7C3AED;--purple800:#4338CA;
-  --amber50:#FEF9EE;--amber600:#D97706;--amber800:#92400E;
-  --red50:#FEF2F2;--red600:#DC2626;--red800:#991B1B;
-  --teal50:#F0FDFA;--teal600:#0D9488;--teal800:#065F46;
+  --blue50:#EFF6FF;--blue800:#1E40AF;
+  --purple50:#F5F3FF;--purple800:#4338CA;
+  --amber50:#FEF9EE;--amber800:#92400E;
+  --red50:#FEF2F2;--red800:#991B1B;
+  --teal50:#F0FDFA;--teal800:#065F46;
   --muted:#4B9E6A;--border:#BBF7D0;--border-light:#D1FAE5;
   --r:8px;--rl:12px;
 }
@@ -25,15 +27,14 @@ html,body{height:100%;overflow:hidden}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--s300);border-radius:10px}
-::-webkit-scrollbar-thumb:hover{background:var(--s500)}
 
-/* ══ LAYOUT ══════════════════════════════════════════════════════════════════ */
+/* LAYOUT */
 #app{display:grid;grid-template-columns:236px 1fr;grid-template-rows:52px 1fr;height:100vh;background:var(--s50)}
 .topbar{grid-column:1/-1;background:var(--white);border-bottom:1.5px solid var(--border-light);display:flex;align-items:center;z-index:20}
 .sidebar{background:var(--s100);border-right:1.5px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .main{display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
-/* ══ TOPBAR ══════════════════════════════════════════════════════════════════ */
+/* TOPBAR */
 .logo-zone{width:236px;padding:0 14px;display:flex;align-items:center;gap:10px;border-right:1.5px solid var(--border-light);height:100%;flex-shrink:0}
 .logo-icon{width:33px;height:33px;border-radius:9px;background:var(--s600);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0}
 .logo-name{font-size:13px;font-weight:600;color:var(--s700);line-height:1.2}
@@ -42,22 +43,24 @@ html,body{height:100%;overflow:hidden}
 .search-wrap input{width:100%;padding:7px 10px 7px 34px;background:var(--s50);border:1.5px solid var(--s300);border-radius:var(--r);font-size:13px;color:var(--s900);outline:none;transition:border-color .15s}
 .search-wrap input:focus{border-color:var(--s500)}
 .search-wrap .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:16px}
-.ai-pill{background:var(--s100);color:var(--s700);border:1px solid var(--s300);border-radius:5px;font-size:10px;font-weight:600;padding:3px 9px;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.ai-pill{background:var(--s100);color:var(--s700);border:1px solid var(--s300);border-radius:5px;font-size:10px;font-weight:600;padding:3px 9px;white-space:nowrap}
 .top-right{margin-left:auto;padding:0 14px;display:flex;align-items:center;gap:10px}
-.avatar{width:32px;height:32px;border-radius:50%;background:var(--s600);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;cursor:pointer}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--s600);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;cursor:pointer;position:relative}
 .icon-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:17px;padding:4px 6px;border-radius:6px;transition:background .12s}
 .icon-btn:hover{background:var(--s100)}
 
-/* ══ SIDEBAR ═════════════════════════════════════════════════════════════════ */
+/* SIDEBAR */
 .profile-card{margin:10px 8px 6px;background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:10px;flex-shrink:0}
-.profile-avatar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.profile-av-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
 .profile-av{width:30px;height:30px;border-radius:50%;background:var(--s600);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
 .profile-name{font-size:12px;font-weight:600;color:var(--s900)}
 .profile-role{font-size:10px;color:var(--muted)}
-.profile-phone{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.profile-phone{font-size:10px;color:var(--muted);margin-bottom:6px}
 .sync-badge{display:flex;align-items:center;gap:5px;background:var(--s50);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:10px;color:var(--muted)}
-.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--s500);flex-shrink:0;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--s500);flex-shrink:0}
+.sync-dot.loading{background:var(--amber800);animation:pulse 1s infinite}
+.sync-dot.error{background:var(--red800)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 .sb-body{flex:1;overflow-y:auto;padding-bottom:8px}
 .sb-sec{font-size:9px;color:var(--s500);letter-spacing:1px;text-transform:uppercase;padding:10px 12px 3px;font-weight:700}
@@ -72,34 +75,32 @@ html,body{height:100%;overflow:hidden}
 .tree:hover{background:var(--s200)}
 .tree.on{background:var(--s100);color:var(--s900);font-weight:500;border-left:3px solid var(--s500);border-radius:0 6px 6px 0;padding-left:21px}
 .tree .ni{font-size:12px;color:var(--muted);flex-shrink:0}
-.tree.on .ni{color:var(--s600)}
 .tree .cnt{margin-left:auto;font-size:9px;color:var(--muted)}
 
-/* ══ MAIN AREA ═══════════════════════════════════════════════════════════════ */
+/* MAIN */
 .mhead{padding:13px 18px 10px;background:var(--white);border-bottom:1.5px solid var(--border-light);flex-shrink:0}
 .mh-row{display:flex;align-items:center;gap:8px;margin-bottom:2px}
 .mh-title{font-size:15px;font-weight:600;color:var(--s900)}
 .mh-badge{font-size:10px;background:var(--s100);color:var(--s700);padding:2px 8px;border-radius:10px;font-weight:600;border:1px solid var(--border)}
 .mh-sub{font-size:11.5px;color:var(--muted)}
 .toolbar{display:flex;gap:6px;padding:8px 18px;background:var(--white);border-bottom:1px solid var(--border-light);flex-shrink:0;flex-wrap:wrap}
-.tbtn{padding:5px 11px;border-radius:6px;font-size:11.5px;border:1.5px solid var(--s300);background:var(--white);color:var(--s700);font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.12s;white-space:nowrap}
+.tbtn{padding:5px 11px;border-radius:6px;font-size:11.5px;border:1.5px solid var(--s300);background:var(--white);color:var(--s700);font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.12s;white-space:nowrap;text-decoration:none}
 .tbtn:hover{background:var(--s50)}
 .tbtn.pri{background:var(--s600);border-color:var(--s600);color:#fff}
 .tbtn.pri:hover{background:var(--s700)}
 .tb-sep{width:1px;background:var(--border-light);margin:0 2px;align-self:stretch}
 .content{flex:1;padding:14px 18px;overflow-y:auto}
 
-/* ══ STATS ═══════════════════════════════════════════════════════════════════ */
+/* STATS */
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:16px}
 .stat{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;text-align:center}
 .stat-n{font-size:22px;font-weight:700;color:var(--s600)}
 .stat-l{font-size:10px;color:var(--muted);margin-top:1px}
 
-/* ══ SECTION HEADER ══════════════════════════════════════════════════════════ */
 .sec-hd{font-size:10.5px;font-weight:600;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .sec-hd::after{content:'';flex:1;height:1px;background:var(--border-light)}
 
-/* ══ GRID VIEW ════════════════════════════════════════════════════════════════ */
+/* GRID & LIST */
 .doc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
 .dcard{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:border-color .15s}
 .dcard:hover{border-color:var(--s400)}
@@ -107,8 +108,6 @@ html,body{height:100%;overflow:hidden}
 .dbody{padding:8px 9px}
 .dname{font-size:11px;font-weight:500;color:var(--s900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
 .dmeta{font-size:10px;color:var(--muted);margin-bottom:5px}
-
-/* ══ LIST VIEW ════════════════════════════════════════════════════════════════ */
 .doc-list{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
 .litem{background:var(--white);border:1px solid var(--border-light);border-radius:var(--r);padding:9px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.12s}
 .litem:hover{border-color:var(--s300);background:var(--s50)}
@@ -117,7 +116,7 @@ html,body{height:100%;overflow:hidden}
 .lmeta{font-size:10px;color:var(--muted);white-space:nowrap}
 .ltags{display:flex;gap:3px;flex-shrink:0}
 
-/* ══ CHIPS / TAGS ════════════════════════════════════════════════════════════ */
+/* CHIPS */
 .chip{display:inline-flex;font-size:9.5px;padding:2px 7px;border-radius:4px;font-weight:600;white-space:nowrap}
 .cg{background:var(--s100);color:var(--s800)}
 .cp{background:var(--purple50);color:var(--purple800)}
@@ -126,7 +125,7 @@ html,body{height:100%;overflow:hidden}
 .cr{background:var(--red50);color:var(--red800)}
 .ct{background:var(--teal50);color:var(--teal800)}
 
-/* ══ SEARCH MODAL ════════════════════════════════════════════════════════════ */
+/* SEARCH MODAL */
 #search-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:flex-start;justify-content:center;padding-top:12vh}
 #search-modal.open{display:flex}
 .smodal{background:var(--white);border:2px solid var(--s400);border-radius:14px;width:620px;max-width:95vw;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
@@ -139,18 +138,18 @@ html,body{height:100%;overflow:hidden}
 .sitem-icon{font-size:20px;flex-shrink:0;width:32px;text-align:center}
 .sitem-name{font-size:13px;color:var(--s900);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sitem-sub{font-size:10.5px;color:var(--muted);white-space:nowrap}
-.sfooter{padding:8px 16px;border-top:1px solid var(--border-light);display:flex;gap:14px;font-size:10.5px;color:var(--muted);flex-wrap:wrap}
+.sfooter{padding:8px 16px;border-top:1px solid var(--border-light);display:flex;gap:14px;font-size:10.5px;color:var(--muted)}
 .skey{background:var(--s100);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:10px;color:var(--s700);font-weight:500}
 .sempty{padding:32px;text-align:center;color:var(--muted);font-size:13px}
 
-/* ══ EMPTY STATE ═════════════════════════════════════════════════════════════ */
+/* EMPTY */
 .empty{text-align:center;padding:48px 24px;color:var(--muted)}
 .empty-icon{font-size:52px;margin-bottom:12px}
 .empty h3{font-size:15px;font-weight:600;color:var(--s800);margin-bottom:6px}
 .empty p{font-size:12px;line-height:1.7;max-width:320px;margin:0 auto 16px}
 .empty-hint{background:var(--s50);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-align:left;font-size:11.5px;color:var(--s800);max-width:360px;margin:0 auto;line-height:1.9}
 
-/* ══ LOGIN SCREEN ════════════════════════════════════════════════════════════ */
+/* LOGIN */
 #login-screen{display:none;position:fixed;inset:0;background:var(--s50);z-index:200;align-items:center;justify-content:center}
 #login-screen.show{display:flex}
 .login-card{background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:44px 48px;max-width:440px;width:100%;text-align:center}
@@ -163,11 +162,27 @@ html,body{height:100%;overflow:hidden}
 .login-demo:hover{background:var(--s100)}
 .login-note{font-size:11px;color:var(--gray400);margin-top:14px;line-height:1.6}
 
-/* ══ VIEW TOGGLE ═════════════════════════════════════════════════════════════ */
+/* LOADING OVERLAY */
+#loading-overlay{display:none;position:fixed;inset:0;background:rgba(240,253,244,.9);z-index:150;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+#loading-overlay.show{display:flex}
+.loading-spinner{width:40px;height:40px;border:3px solid var(--s200);border-top:3px solid var(--s600);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 .view-btn{padding:5px 8px;border-radius:6px;border:1.5px solid var(--s300);background:var(--white);color:var(--muted);cursor:pointer;font-size:13px;transition:.12s}
 .view-btn.on{background:var(--s100);color:var(--s700)}
 
-/* ══ RESPONSIVE ══════════════════════════════════════════════════════════════ */
+/* FOLDER PICKER */
+#folder-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:110;align-items:center;justify-content:center}
+#folder-modal.open{display:flex}
+.folder-card{background:var(--white);border-radius:14px;padding:24px;width:480px;max-width:95vw}
+.folder-title{font-size:15px;font-weight:600;color:var(--s900);margin-bottom:6px}
+.folder-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+.folder-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border-light);border-radius:var(--r);cursor:pointer;transition:.12s;margin-bottom:6px}
+.folder-item:hover{background:var(--s50);border-color:var(--s300)}
+.folder-item.on{background:var(--s100);border-color:var(--s500)}
+.folder-name{font-size:12.5px;font-weight:500;color:var(--s900);flex:1}
+.folder-meta{font-size:10.5px;color:var(--muted)}
+
 @media(max-width:768px){
   #app{grid-template-columns:1fr;grid-template-rows:52px 1fr}
   .sidebar{display:none}
@@ -179,34 +194,49 @@ html,body{height:100%;overflow:hidden}
 </head>
 <body>
 
-<!-- ══ LOGIN SCREEN ══════════════════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div id="login-screen" class="show">
   <div class="login-card">
     <div class="login-logo">D</div>
     <div class="login-title">DocMind Vật Lý</div>
     <div class="login-sub">
       Xin chào <strong>Thầy Hạ Tuấn Anh</strong>!<br>
-      Phần mềm quản lý tài liệu Vật Lý chuyên nghiệp.<br>
-      Kết nối Google Drive để bắt đầu.
+      Đăng nhập Google để đọc tài liệu từ Drive của Thầy.
     </div>
-    <button class="login-btn" onclick="loginGoogle()">
+    <button class="login-btn" onclick="loginWithGoogle()">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.1-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3 0 5.8 1.1 7.9 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.5 35.6 26.9 36 24 36c-5.2 0-9.6-3-11.3-7.3l-6.5 5C9.6 39.6 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.8l6.2 5.2C41.1 35.7 44 30.3 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
-      Đăng nhập bằng Google
+      Đăng nhập bằng Google Drive
     </button>
     <button class="login-demo" onclick="loginDemo()">
-      📁 Dùng thử với tài liệu mẫu (không cần đăng nhập)
+      📁 Xem Demo (không cần đăng nhập)
     </button>
     <div class="login-note">
-      DocMind chỉ đọc danh sách file trong Drive của Thầy.<br>
-      Không chỉnh sửa, không xóa, không tải lên bất kỳ file nào.
+      Chỉ đọc danh sách file. Không chỉnh sửa, không xóa file nào.
     </div>
   </div>
 </div>
 
-<!-- ══ MAIN APP ══════════════════════════════════════════════════════════════ -->
-<div id="app">
+<!-- LOADING -->
+<div id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div style="font-size:13px;color:var(--muted)" id="loading-text">Đang tải tài liệu từ Drive...</div>
+</div>
 
-  <!-- Topbar -->
+<!-- FOLDER PICKER -->
+<div id="folder-modal">
+  <div class="folder-card">
+    <div class="folder-title">📂 Chọn thư mục tài liệu Vật Lý</div>
+    <div class="folder-sub">Chọn thư mục chứa tài liệu của Thầy trên Google Drive</div>
+    <div id="folder-list"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="tbtn" onclick="closeFolderModal()" style="flex:1">Hủy</button>
+      <button class="tbtn pri" onclick="confirmFolder()" style="flex:1">✓ Chọn thư mục này</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
   <header class="topbar">
     <div class="logo-zone">
       <div class="logo-icon">D</div>
@@ -221,16 +251,15 @@ html,body{height:100%;overflow:hidden}
     </div>
     <div class="ai-pill">✦ AI phân loại</div>
     <div class="top-right">
-      <button class="icon-btn" onclick="openSearch()" title="Tìm kiếm nhanh (Ctrl+K)">🔍</button>
-      <button class="icon-btn" onclick="refreshFiles()" title="Làm mới">⟳</button>
-      <div class="avatar" title="Thầy Hạ Tuấn Anh">HTA</div>
+      <button class="icon-btn" onclick="openSearch()" title="Ctrl+K">🔍</button>
+      <button class="icon-btn" onclick="loadDriveFiles()" title="Làm mới">⟳</button>
+      <div class="avatar" title="Thầy Hạ Tuấn Anh" onclick="handleLogout()">HTA</div>
     </div>
   </header>
 
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="profile-card">
-      <div class="profile-avatar-row">
+      <div class="profile-av-row">
         <div class="profile-av">HTA</div>
         <div>
           <div class="profile-name">Thầy Hạ Tuấn Anh</div>
@@ -239,22 +268,19 @@ html,body{height:100%;overflow:hidden}
       </div>
       <div class="profile-phone">📞 0987 354 781</div>
       <div class="sync-badge">
-        <div class="sync-dot"></div>
-        <span id="sync-text">Đang kết nối...</span>
+        <div class="sync-dot" id="sync-dot"></div>
+        <span id="sync-text">Chưa kết nối</span>
       </div>
     </div>
-
-    <div class="sb-body" id="sidebar">
+    <div class="sb-body">
       <div class="sb-sec">Tổng quan</div>
       <div class="nav on" data-page="dashboard" onclick="navigate(this)"><span class="ni">⊞</span> Dashboard <span class="cnt" id="cnt-all">0</span></div>
-      <div class="nav" data-page="recent"    onclick="navigate(this)"><span class="ni">⏱</span> Gần đây</div>
-      <div class="nav" data-page="pinned"    onclick="navigate(this)"><span class="ni">📌</span> Đã ghim</div>
-
+      <div class="nav" data-page="recent" onclick="navigate(this)"><span class="ni">⏱</span> Gần đây</div>
+      <div class="nav" data-page="pinned" onclick="navigate(this)"><span class="ni">📌</span> Đã ghim</div>
       <div class="sb-sec">1 · Theo khối lớp</div>
       <div class="tree" data-page="lop10" onclick="navigate(this)"><span class="ni">📘</span> Lớp 10 <span class="cnt" id="cnt-l10">0</span></div>
       <div class="tree" data-page="lop11" onclick="navigate(this)"><span class="ni">📗</span> Lớp 11 <span class="cnt" id="cnt-l11">0</span></div>
       <div class="tree" data-page="lop12" onclick="navigate(this)"><span class="ni">📕</span> Lớp 12 <span class="cnt" id="cnt-l12">0</span></div>
-
       <div class="sb-sec">1 · Theo chủ đề</div>
       <div class="tree" data-page="co-hoc"    onclick="navigate(this)"><span class="ni">⚙</span> Cơ học <span class="cnt" id="cnt-co">0</span></div>
       <div class="tree" data-page="nhiet-hoc" onclick="navigate(this)"><span class="ni">🌡</span> Nhiệt học <span class="cnt" id="cnt-nhiet">0</span></div>
@@ -262,27 +288,22 @@ html,body{height:100%;overflow:hidden}
       <div class="tree" data-page="quang-hoc" onclick="navigate(this)"><span class="ni">☀</span> Quang học <span class="cnt" id="cnt-quang">0</span></div>
       <div class="tree" data-page="dao-dong"  onclick="navigate(this)"><span class="ni">〜</span> Dao động - Sóng <span class="cnt" id="cnt-dao">0</span></div>
       <div class="tree" data-page="hat-nhan"  onclick="navigate(this)"><span class="ni">☢</span> Hạt nhân <span class="cnt" id="cnt-hat">0</span></div>
-
       <div class="sb-sec">2 · Đề thi</div>
-      <div class="tree" data-page="de-hk"       onclick="navigate(this)"><span class="ni">📝</span> Đề Học kì <span class="cnt" id="cnt-hk">0</span></div>
-      <div class="tree" data-page="de-gk"       onclick="navigate(this)"><span class="ni">📝</span> Đề Giữa kì <span class="cnt" id="cnt-gk">0</span></div>
-      <div class="tree" data-page="de-ks"       onclick="navigate(this)"><span class="ni">📋</span> Đề Khảo sát <span class="cnt" id="cnt-ks">0</span></div>
-      <div class="tree" data-page="de-thang"    onclick="navigate(this)"><span class="ni">📅</span> Đề theo tháng <span class="cnt" id="cnt-thang">0</span></div>
-      <div class="tree" data-page="de-online"   onclick="navigate(this)"><span class="ni">💻</span> Online / tuần <span class="cnt" id="cnt-online">0</span></div>
-      <div class="tree" data-page="de-nuoc-rut" onclick="navigate(this)"><span class="ni">🏆</span> Nước rút THPT <span class="cnt" id="cnt-nr">0</span></div>
-
+      <div class="tree" data-page="de-hk"        onclick="navigate(this)"><span class="ni">📝</span> Đề Học kì <span class="cnt" id="cnt-hk">0</span></div>
+      <div class="tree" data-page="de-gk"        onclick="navigate(this)"><span class="ni">📝</span> Đề Giữa kì <span class="cnt" id="cnt-gk">0</span></div>
+      <div class="tree" data-page="de-ks"        onclick="navigate(this)"><span class="ni">📋</span> Đề Khảo sát <span class="cnt" id="cnt-ks">0</span></div>
+      <div class="tree" data-page="de-thang"     onclick="navigate(this)"><span class="ni">📅</span> Đề theo tháng <span class="cnt" id="cnt-thang">0</span></div>
+      <div class="tree" data-page="de-online"    onclick="navigate(this)"><span class="ni">💻</span> Online / tuần <span class="cnt" id="cnt-online">0</span></div>
+      <div class="tree" data-page="de-nuoc-rut"  onclick="navigate(this)"><span class="ni">🏆</span> Nước rút THPT <span class="cnt" id="cnt-nr">0</span></div>
       <div class="sb-sec">3 · Thuyết trình</div>
       <div class="tree" data-page="slide" onclick="navigate(this)"><span class="ni">📊</span> Slide PowerPoint <span class="cnt" id="cnt-slide">0</span></div>
     </div>
   </aside>
 
-  <!-- Main content -->
-  <main class="main" id="main-content">
-    <!-- Rendered by JS -->
-  </main>
+  <main class="main" id="main-content"></main>
 </div>
 
-<!-- ══ SEARCH MODAL ══════════════════════════════════════════════════════════ -->
+<!-- SEARCH MODAL -->
 <div id="search-modal" onclick="closeSearchOutside(event)">
   <div class="smodal">
     <div class="smodal-input">
@@ -290,9 +311,7 @@ html,body{height:100%;overflow:hidden}
       <input type="text" id="search-input" placeholder="Tìm tài liệu Vật Lý của Thầy..." oninput="doSearch(this.value)" onkeydown="searchKey(event)">
       <button onclick="closeSearch()" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px">✕</button>
     </div>
-    <div class="sresults" id="search-results">
-      <div class="sempty">Gõ tên file để tìm kiếm tức thì</div>
-    </div>
+    <div class="sresults" id="search-results"><div class="sempty">Gõ tên file để tìm kiếm tức thì</div></div>
     <div class="sfooter">
       <span><kbd class="skey">↑↓</kbd> di chuyển</span>
       <span><kbd class="skey">Enter</kbd> mở file</span>
@@ -303,112 +322,283 @@ html,body{height:100%;overflow:hidden}
 </div>
 
 <script>
-// ══ DỮ LIỆU MẪU (sẽ thay bằng Google Drive API thật) ══════════════════════
-const DEMO_FILES = [
-  {id:'1',name:'VatLy_Nhiet_Chuong1_L10.pdf',    ext:'PDF', folder:'BaiGiang/Lop10',    size:2400, modified:'2025-05-29T09:00:00'},
-  {id:'2',name:'Slide_Nhiet_Hoc_Lop10.pptx',     ext:'PPTX',folder:'Slide/Lop10',       size:8100, modified:'2025-05-28T14:00:00'},
-  {id:'3',name:'De_thi_HK1_VatLy_L10_2025.docx', ext:'DOCX',folder:'DeThi/HocKi',       size:340,  modified:'2025-05-27T10:00:00'},
-  {id:'4',name:'De_thi_GK2_VatLy_L11.docx',      ext:'DOCX',folder:'DeThi/GiuaKi',      size:290,  modified:'2025-05-26T08:00:00'},
-  {id:'5',name:'De_online_tuan20_L11_DaoDong.docx',ext:'DOCX',folder:'DeThi/Online',    size:180,  modified:'2025-05-28T08:00:00'},
-  {id:'6',name:'De_online_tuan19_L10_NhietHoc.docx',ext:'DOCX',folder:'DeThi/Online',   size:170,  modified:'2025-05-21T08:00:00'},
-  {id:'7',name:'NuocRut_THPT_so12_VatLy_L12.pdf', ext:'PDF', folder:'DeThi/NuocRut',    size:1200, modified:'2025-05-26T07:00:00'},
-  {id:'8',name:'NuocRut_THPT_so11_Dien_Song.pdf', ext:'PDF', folder:'DeThi/NuocRut',    size:1100, modified:'2025-04-20T07:00:00'},
-  {id:'9',name:'NuocRut_THPT_so10_Quang_HatNhan.pdf',ext:'PDF',folder:'DeThi/NuocRut', size:980,  modified:'2025-04-10T07:00:00'},
-  {id:'10',name:'BaiGiang_DienHoc_L11_XC.pdf',   ext:'PDF', folder:'BaiGiang/Lop11',    size:1800, modified:'2025-05-25T11:00:00'},
-  {id:'11',name:'Slide_DienXoayChieu_L12.pptx',  ext:'PPTX',folder:'Slide/Lop12',       size:9200, modified:'2025-05-24T15:00:00'},
-  {id:'12',name:'Slide_DaoDong_CoHoc_L11.pptx',  ext:'PPTX',folder:'Slide/Lop11',       size:7400, modified:'2025-05-23T09:00:00'},
-  {id:'13',name:'De_KhaoSat_DauNam_L12.docx',    ext:'DOCX',folder:'DeThi/KhaoSat',     size:310,  modified:'2025-09-02T07:00:00'},
-  {id:'14',name:'De_thi_thang3_L10_CoHoc.docx',  ext:'DOCX',folder:'DeThi/TheoThang',   size:260,  modified:'2025-03-15T08:00:00'},
-  {id:'15',name:'De_thi_thang4_L11_Dien.docx',   ext:'DOCX',folder:'DeThi/TheoThang',   size:280,  modified:'2025-04-15T08:00:00'},
-  {id:'16',name:'BaiTap_QuangHoc_L12.pdf',        ext:'PDF', folder:'BaiGiang/Lop12',    size:920,  modified:'2025-05-20T10:00:00'},
-  {id:'17',name:'TomTat_HatNhan_L12.pdf',         ext:'PDF', folder:'BaiGiang/Lop12',    size:640,  modified:'2025-05-18T10:00:00'},
-  {id:'18',name:'Slide_QuangHoc_Song_L12.pptx',  ext:'PPTX',folder:'Slide/Lop12',       size:6800, modified:'2025-05-17T14:00:00'},
-  {id:'19',name:'BaiGiang_SongAm_DaoDong_L11.pdf',ext:'PDF',folder:'BaiGiang/Lop11',    size:1100, modified:'2025-05-15T10:00:00'},
-  {id:'20',name:'De_HK2_VatLy_L11_2025.docx',    ext:'DOCX',folder:'DeThi/HocKi',       size:350,  modified:'2025-05-10T08:00:00'},
-]
-
-// ══ PHÂN LOẠI TỰ ĐỘNG ════════════════════════════════════════════════════════
-function classify(filename) {
-  const n = filename.toLowerCase()
-  const tags = []
-  // Lớp
-  if (/_l10|lop10|lop_10|_10_/.test(n)) tags.push({l:'L10',c:'cg'})
-  else if (/_l11|lop11|lop_11|_11_/.test(n)) tags.push({l:'L11',c:'cg'})
-  else if (/_l12|lop12|lop_12|_12_/.test(n)) tags.push({l:'L12',c:'cp'})
-  // Loại tài liệu
-  if (/nuocrut|nuoc_rut|nr\d/.test(n))           tags.push({l:'Nước rút',c:'cr'})
-  else if (/hk\d|hocki|hoc_ki|hoc.*ky/.test(n)) tags.push({l:'Học kì',c:'cr'})
-  else if (/gk\d|giuaki|giua_ki/.test(n))        tags.push({l:'Giữa kì',c:'ca'})
-  else if (/khaosат|khao_sat/.test(n))           tags.push({l:'Khảo sát',c:'cb'})
-  else if (/online|tuan\d|_tuan/.test(n))        tags.push({l:'Online',c:'cb'})
-  else if (/thang\d|_thang/.test(n))             tags.push({l:'Theo tháng',c:'ca'})
-  else if (/de_thi|dethi|_de_/.test(n))          tags.push({l:'Đề thi',c:'cr'})
-  else if (/slide|pptx/.test(n))                 tags.push({l:'Slide PPT',c:'cp'})
-  else if (/baitap|bai_tap/.test(n))             tags.push({l:'Bài tập',c:'ca'})
-  else                                           tags.push({l:'Tài liệu',c:'cg'})
-  // Chủ đề
-  if      (/nhiet|nhiet_hoc/.test(n)) tags.push({l:'Nhiệt học',c:'ct'})
-  else if (/dien|xoaychieu/.test(n))  tags.push({l:'Điện học',c:'ct'})
-  else if (/quang|anhsang/.test(n))   tags.push({l:'Quang học',c:'ct'})
-  else if (/daodong|song_am|dao_dong/.test(n)) tags.push({l:'Dao động',c:'ct'})
-  else if (/hatnhan|hat_nhan|phongxa/.test(n)) tags.push({l:'Hạt nhân',c:'ct'})
-  else if (/cohoc|co_hoc|donghoc/.test(n))     tags.push({l:'Cơ học',c:'ct'})
-  return tags
-}
-
-// Tag mỗi file một lần
-const FILES = DEMO_FILES.map(f => ({...f, tags: classify(f.name)}))
+// ══ CONFIG — Client ID của Thầy ════════════════════════════════════════════
+const CLIENT_ID = '182412193130-vvfge5ifsfk5ukdectl3ittk48vsqg2j.apps.googleusercontent.com'
+const SCOPES = 'https://www.googleapis.com/auth/drive.readonly'
+const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'
 
 // ══ STATE ══════════════════════════════════════════════════════════════════
+let FILES = []
 let currentPage = 'dashboard'
 let viewMode = 'list'
-let pinned = JSON.parse(localStorage.getItem('pinned')||'[]')
-let loggedIn = false
+let pinned = JSON.parse(localStorage.getItem('dm-pinned')||'[]')
+let selectedFolderId = localStorage.getItem('dm-folder-id')||null
+let selectedFolderName = localStorage.getItem('dm-folder-name')||'Drive'
+let tokenClient, gapiInited=false, gsiInited=false
+let isDemo = false
 
 const EXT_ICON = {PDF:'📄',DOCX:'📝',DOC:'📝',PPTX:'📊',PPT:'📊',XLSX:'📈',JPG:'🖼',PNG:'🖼'}
 const EXT_BG   = {PDF:'#FEF2F2',DOCX:'#EFF6FF',PPTX:'#F5F3FF',PPT:'#F5F3FF',XLSX:'#F0FDF4'}
 
-// ══ FILTER LOGIC ══════════════════════════════════════════════════════════
-function getFiles(page) {
-  const hasTag = (f,l) => f.tags.some(t=>t.l===l||t.l.includes(l))
-  switch(page) {
-    case 'lop10':      return FILES.filter(f=>hasTag(f,'L10'))
-    case 'lop11':      return FILES.filter(f=>hasTag(f,'L11'))
-    case 'lop12':      return FILES.filter(f=>hasTag(f,'L12'))
-    case 'co-hoc':     return FILES.filter(f=>hasTag(f,'Cơ học'))
-    case 'nhiet-hoc':  return FILES.filter(f=>hasTag(f,'Nhiệt học'))
-    case 'dien-hoc':   return FILES.filter(f=>hasTag(f,'Điện học'))
-    case 'quang-hoc':  return FILES.filter(f=>hasTag(f,'Quang học'))
-    case 'dao-dong':   return FILES.filter(f=>hasTag(f,'Dao động'))
-    case 'hat-nhan':   return FILES.filter(f=>hasTag(f,'Hạt nhân'))
-    case 'de-hk':      return FILES.filter(f=>hasTag(f,'Học kì'))
-    case 'de-gk':      return FILES.filter(f=>hasTag(f,'Giữa kì'))
-    case 'de-ks':      return FILES.filter(f=>hasTag(f,'Khảo sát'))
-    case 'de-thang':   return FILES.filter(f=>hasTag(f,'Theo tháng'))
-    case 'de-online':  return FILES.filter(f=>hasTag(f,'Online'))
-    case 'de-nuoc-rut':return FILES.filter(f=>hasTag(f,'Nước rút'))
-    case 'slide':      return FILES.filter(f=>hasTag(f,'Slide PPT'))
+// ══ GOOGLE API INIT ════════════════════════════════════════════════════════
+function gapiLoaded() {
+  gapi.load('client', async () => {
+    await gapi.client.init({ discoveryDocs:[DISCOVERY_DOC] })
+    gapiInited = true
+    maybeLogin()
+  })
+}
+function gsiLoaded() {
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: async (resp) => {
+      if (resp.error) { showError('Đăng nhập thất bại: '+resp.error); return }
+      document.getElementById('login-screen').classList.remove('show')
+      await loadDriveFiles()
+    }
+  })
+  gsiInited = true
+  maybeLogin()
+}
+function maybeLogin() {
+  // Check nếu đã có token lưu
+  if (gapiInited && gsiInited) {
+    const saved = localStorage.getItem('dm-token')
+    if (saved) {
+      try {
+        gapi.client.setToken(JSON.parse(saved))
+        document.getElementById('login-screen').classList.remove('show')
+        loadDriveFiles()
+      } catch(_) {}
+    }
+  }
+}
+
+async function loginWithGoogle() {
+  if (!gapiInited || !gsiInited) {
+    setTimeout(loginWithGoogle, 500); return
+  }
+  tokenClient.requestAccessToken({ prompt: 'consent' })
+}
+
+function handleLogout() {
+  if (!confirm('Đăng xuất khỏi DocMind?')) return
+  const token = gapi.client.getToken()
+  if (token) google.accounts.oauth2.revoke(token.access_token, ()=>{})
+  gapi.client.setToken(null)
+  localStorage.removeItem('dm-token')
+  FILES = []
+  document.getElementById('login-screen').classList.add('show')
+  setSyncStatus('idle','Chưa kết nối')
+}
+
+// ══ LOAD FILES TỪ DRIVE ════════════════════════════════════════════════════
+async function loadDriveFiles() {
+  showLoading('Đang tải tài liệu từ Drive...')
+  setSyncStatus('loading','Đang đồng bộ...')
+  try {
+    // Lưu token
+    const token = gapi.client.getToken()
+    if (token) localStorage.setItem('dm-token', JSON.stringify(token))
+
+    let query = "mimeType != 'application/vnd.google-apps.folder' and trashed = false"
+    if (selectedFolderId) {
+      query = `'${selectedFolderId}' in parents and trashed = false`
+    } else {
+      // Lấy file trong toàn bộ Drive (lọc theo extension)
+      query += " and (name contains '.pdf' or name contains '.docx' or name contains '.doc' or name contains '.pptx' or name contains '.ppt' or name contains '.xlsx')"
+    }
+
+    let allFiles = []
+    let pageToken = null
+    do {
+      const params = {
+        q: query,
+        fields: 'nextPageToken,files(id,name,mimeType,modifiedTime,size,parents,webViewLink,webContentLink)',
+        pageSize: 200,
+        orderBy: 'modifiedTime desc'
+      }
+      if (pageToken) params.pageToken = pageToken
+      const resp = await gapi.client.drive.files.list(params)
+      allFiles = allFiles.concat(resp.result.files || [])
+      pageToken = resp.result.nextPageToken
+    } while (pageToken && allFiles.length < 1000)
+
+    FILES = allFiles.map(f => ({
+      id: f.id,
+      name: f.name,
+      ext: getExt(f.name),
+      size: parseInt(f.size||0)/1024,
+      modified: f.modifiedTime,
+      folder: selectedFolderName || 'Drive',
+      webViewLink: f.webViewLink,
+      webContentLink: f.webContentLink,
+      tags: classify(f.name)
+    }))
+
+    hideLoading()
+    setSyncStatus('ok', FILES.length + ' tài liệu · ' + new Date().toLocaleTimeString('vi-VN'))
+    updateCounts()
+    render()
+
+    // Nếu chưa chọn thư mục, gợi ý chọn
+    if (!selectedFolderId && FILES.length === 0) {
+      showFolderPicker()
+    }
+  } catch(err) {
+    hideLoading()
+    setSyncStatus('error','Lỗi kết nối Drive')
+    console.error(err)
+    if (err.status === 401) {
+      localStorage.removeItem('dm-token')
+      document.getElementById('login-screen').classList.add('show')
+    }
+  }
+}
+
+// ══ FOLDER PICKER ══════════════════════════════════════════════════════════
+async function showFolderPicker() {
+  document.getElementById('folder-modal').classList.add('open')
+  const list = document.getElementById('folder-list')
+  list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted)">Đang tải danh sách thư mục...</div>'
+  try {
+    const resp = await gapi.client.drive.files.list({
+      q: "mimeType='application/vnd.google-apps.folder' and trashed=false",
+      fields: 'files(id,name)',
+      pageSize: 30,
+      orderBy: 'name'
+    })
+    const folders = resp.result.files || []
+    list.innerHTML = folders.map(f=>`
+      <div class="folder-item" id="fi-${f.id}" onclick="selectFolder('${f.id}','${f.name.replace(/'/g,"\\'")}')">
+        <span style="font-size:20px">📁</span>
+        <div class="folder-name">${f.name}</div>
+      </div>`).join('') || '<div style="padding:12px;color:var(--muted);font-size:12px">Không tìm thấy thư mục nào</div>'
+  } catch(_) { list.innerHTML = '<div style="padding:12px;color:red;font-size:12px">Lỗi tải thư mục</div>' }
+}
+function selectFolder(id, name) {
+  document.querySelectorAll('.folder-item').forEach(el=>el.classList.remove('on'))
+  document.getElementById('fi-'+id)?.classList.add('on')
+  selectedFolderId = id
+  selectedFolderName = name
+}
+function confirmFolder() {
+  if (!selectedFolderId) { alert('Thầy chưa chọn thư mục nào!'); return }
+  localStorage.setItem('dm-folder-id', selectedFolderId)
+  localStorage.setItem('dm-folder-name', selectedFolderName)
+  closeFolderModal()
+  loadDriveFiles()
+}
+function closeFolderModal() {
+  document.getElementById('folder-modal').classList.remove('open')
+}
+
+// ══ DEMO MODE ══════════════════════════════════════════════════════════════
+const DEMO_FILES = [
+  {id:'d1',name:'VatLy_Nhiet_Chuong1_L10.pdf',    ext:'PDF', size:2400,modified:'2025-05-29T09:00:00',folder:'BaiGiang/Lop10'},
+  {id:'d2',name:'Slide_Nhiet_Hoc_Lop10.pptx',     ext:'PPTX',size:8100,modified:'2025-05-28T14:00:00',folder:'Slide/Lop10'},
+  {id:'d3',name:'De_thi_HK1_VatLy_L10_2025.docx', ext:'DOCX',size:340, modified:'2025-05-27T10:00:00',folder:'DeThi/HocKi'},
+  {id:'d4',name:'De_thi_GK2_VatLy_L11.docx',      ext:'DOCX',size:290, modified:'2025-05-26T08:00:00',folder:'DeThi/GiuaKi'},
+  {id:'d5',name:'De_online_tuan20_L11_DaoDong.docx',ext:'DOCX',size:180,modified:'2025-05-28T08:00:00',folder:'DeThi/Online'},
+  {id:'d6',name:'NuocRut_THPT_so12_VatLy_L12.pdf', ext:'PDF', size:1200,modified:'2025-05-26T07:00:00',folder:'DeThi/NuocRut'},
+  {id:'d7',name:'NuocRut_THPT_so11_Dien_Song.pdf', ext:'PDF', size:1100,modified:'2025-04-20T07:00:00',folder:'DeThi/NuocRut'},
+  {id:'d8',name:'BaiGiang_DienHoc_L11_XC.pdf',     ext:'PDF', size:1800,modified:'2025-05-25T11:00:00',folder:'BaiGiang/Lop11'},
+  {id:'d9',name:'Slide_DienXoayChieu_L12.pptx',    ext:'PPTX',size:9200,modified:'2025-05-24T15:00:00',folder:'Slide/Lop12'},
+  {id:'d10',name:'Slide_DaoDong_CoHoc_L11.pptx',   ext:'PPTX',size:7400,modified:'2025-05-23T09:00:00',folder:'Slide/Lop11'},
+  {id:'d11',name:'De_KhaoSat_DauNam_L12.docx',     ext:'DOCX',size:310, modified:'2025-09-02T07:00:00',folder:'DeThi/KhaoSat'},
+  {id:'d12',name:'De_thi_thang3_L10_CoHoc.docx',   ext:'DOCX',size:260, modified:'2025-03-15T08:00:00',folder:'DeThi/TheoThang'},
+  {id:'d13',name:'BaiGiang_SongAm_L11.pdf',         ext:'PDF', size:1100,modified:'2025-05-15T10:00:00',folder:'BaiGiang/Lop11'},
+  {id:'d14',name:'Slide_QuangHoc_Song_L12.pptx',    ext:'PPTX',size:6800,modified:'2025-05-17T14:00:00',folder:'Slide/Lop12'},
+  {id:'d15',name:'TomTat_HatNhan_L12.pdf',           ext:'PDF', size:640, modified:'2025-05-18T10:00:00',folder:'BaiGiang/Lop12'},
+]
+function loginDemo() {
+  isDemo = true
+  FILES = DEMO_FILES.map(f=>({...f,tags:classify(f.name)}))
+  document.getElementById('login-screen').classList.remove('show')
+  setSyncStatus('ok','Demo · '+FILES.length+' tài liệu mẫu')
+  updateCounts(); render()
+}
+
+// ══ PHÂN LOẠI AUTO ═════════════════════════════════════════════════════════
+function classify(filename) {
+  const n = filename.toLowerCase()
+  const tags = []
+  if (/_l10|lop10|_10_|lop_10/.test(n))      tags.push({l:'L10',c:'cg'})
+  else if (/_l11|lop11|_11_|lop_11/.test(n)) tags.push({l:'L11',c:'cg'})
+  else if (/_l12|lop12|_12_|lop_12/.test(n)) tags.push({l:'L12',c:'cp'})
+
+  if      (/nuocrut|nuoc_rut|nr\d/.test(n))        tags.push({l:'Nước rút',c:'cr'})
+  else if (/hk\d|hocki|hoc_ki|hoc.*ki/.test(n))   tags.push({l:'Học kì',c:'cr'})
+  else if (/gk\d|giuaki|giua_ki/.test(n))          tags.push({l:'Giữa kì',c:'ca'})
+  else if (/khaosát|khaosat|khao_sat/.test(n))     tags.push({l:'Khảo sát',c:'cb'})
+  else if (/online|tuan\d|_tuan/.test(n))          tags.push({l:'Online',c:'cb'})
+  else if (/thang\d|_thang/.test(n))               tags.push({l:'Theo tháng',c:'ca'})
+  else if (/de_thi|dethi|_de_|đề/.test(n))         tags.push({l:'Đề thi',c:'cr'})
+  else if (/slide|\.pptx?/.test(n))                tags.push({l:'Slide PPT',c:'cp'})
+  else if (/baitap|bai_tap/.test(n))               tags.push({l:'Bài tập',c:'ca'})
+  else                                              tags.push({l:'Tài liệu',c:'cg'})
+
+  const topics = [
+    [/nhiet|nhiet_hoc|nhiệt/,'Nhiệt học'],
+    [/dien|dien_hoc|điện|xoaychieu/,'Điện học'],
+    [/quang|quang_hoc|ánh sáng|anhsang/,'Quang học'],
+    [/daodong|dao_dong|song_am|sóng/,'Dao động - Sóng'],
+    [/hatnhan|hat_nhan|phongxa|hạt nhân/,'Hạt nhân'],
+    [/cohoc|co_hoc|donghoc|cơ học/,'Cơ học'],
+  ]
+  for (const [rx,label] of topics) if(rx.test(n)){tags.push({l:label,c:'ct'});break}
+  return tags
+}
+
+// ══ HELPERS ════════════════════════════════════════════════════════════════
+function getExt(name){return (name.split('.').pop()||'').toUpperCase()}
+function fSize(kb){return kb<1024?Math.round(kb)+'KB':(kb/1024).toFixed(1)+'MB'}
+function timeAgo(iso){
+  const d=Math.floor((Date.now()-new Date(iso))/86400000)
+  if(d===0)return'hôm nay';if(d===1)return'hôm qua'
+  if(d<7)return d+' ngày trước'
+  return new Date(iso).toLocaleDateString('vi-VN')
+}
+function tagsHTML(tags){return tags.slice(0,3).map(t=>`<span class="chip ${t.c}">${t.l}</span>`).join('')}
+function showLoading(msg){document.getElementById('loading-overlay').classList.add('show');document.getElementById('loading-text').textContent=msg||'Đang tải...'}
+function hideLoading(){document.getElementById('loading-overlay').classList.remove('show')}
+function setSyncStatus(state,text){
+  const dot=document.getElementById('sync-dot')
+  const txt=document.getElementById('sync-text')
+  dot.className='sync-dot'+(state==='loading'?' loading':state==='error'?' error':'')
+  txt.textContent=text
+}
+function showError(msg){alert('⚠️ '+msg)}
+
+// ══ FILTER ═════════════════════════════════════════════════════════════════
+function getFiles(page){
+  const has=(f,l)=>f.tags.some(t=>t.l===l||t.l.includes(l))
+  switch(page){
+    case 'lop10':      return FILES.filter(f=>has(f,'L10'))
+    case 'lop11':      return FILES.filter(f=>has(f,'L11'))
+    case 'lop12':      return FILES.filter(f=>has(f,'L12'))
+    case 'co-hoc':     return FILES.filter(f=>has(f,'Cơ học'))
+    case 'nhiet-hoc':  return FILES.filter(f=>has(f,'Nhiệt học'))
+    case 'dien-hoc':   return FILES.filter(f=>has(f,'Điện học'))
+    case 'quang-hoc':  return FILES.filter(f=>has(f,'Quang học'))
+    case 'dao-dong':   return FILES.filter(f=>has(f,'Dao động'))
+    case 'hat-nhan':   return FILES.filter(f=>has(f,'Hạt nhân'))
+    case 'de-hk':      return FILES.filter(f=>has(f,'Học kì'))
+    case 'de-gk':      return FILES.filter(f=>has(f,'Giữa kì'))
+    case 'de-ks':      return FILES.filter(f=>has(f,'Khảo sát'))
+    case 'de-thang':   return FILES.filter(f=>has(f,'Theo tháng'))
+    case 'de-online':  return FILES.filter(f=>has(f,'Online'))
+    case 'de-nuoc-rut':return FILES.filter(f=>has(f,'Nước rút'))
+    case 'slide':      return FILES.filter(f=>has(f,'Slide PPT'))
     case 'pinned':     return FILES.filter(f=>pinned.includes(f.id))
-    case 'recent':     return FILES.slice(0,15)
+    case 'recent':     return FILES.slice(0,20)
     default:           return FILES
   }
 }
 
-// ══ RENDER HELPERS ══════════════════════════════════════════════════════════
-function timeAgo(iso) {
-  const d = Math.floor((Date.now()-new Date(iso))/86400000)
-  if (d===0) return 'hôm nay'; if (d===1) return 'hôm qua'
-  if (d<7) return d+' ngày trước'
-  return new Date(iso).toLocaleDateString('vi-VN')
-}
-function fSize(kb) {
-  return kb<1024 ? kb+'KB' : (kb/1024).toFixed(1)+'MB'
-}
-function tagsHTML(tags) {
-  return tags.slice(0,3).map(t=>`<span class="chip ${t.c}">${t.l}</span>`).join('')
-}
-function fileCard(f) {
-  const isPinned = pinned.includes(f.id)
+// ══ RENDER ═════════════════════════════════════════════════════════════════
+function fileCard(f){
   return `<div class="dcard" ondblclick="openFile('${f.id}')" title="Double-click để mở">
     <div class="dthumb" style="background:${EXT_BG[f.ext]||'#F0FDF4'}">${EXT_ICON[f.ext]||'📄'}</div>
     <div class="dbody">
@@ -418,7 +608,7 @@ function fileCard(f) {
     </div>
   </div>`
 }
-function fileRow(f) {
+function fileRow(f){
   return `<div class="litem" ondblclick="openFile('${f.id}')" title="Double-click để mở">
     <div class="licon" style="background:${EXT_BG[f.ext]||'#F0FDF4'}">${EXT_ICON[f.ext]||'📄'}</div>
     <div style="flex:1;min-width:0">
@@ -429,45 +619,14 @@ function fileRow(f) {
   </div>`
 }
 
-// ══ PAGES ══════════════════════════════════════════════════════════════════
-function renderDashboard() {
-  const deThi = FILES.filter(f=>f.tags.some(t=>['Học kì','Giữa kì','Khảo sát','Theo tháng','Online','Nước rút'].includes(t.l)))
-  const slides = FILES.filter(f=>f.tags.some(t=>t.l==='Slide PPT'))
-  const nuocRut= FILES.filter(f=>f.tags.some(t=>t.l==='Nước rút'))
-  return `
-    <div class="mhead">
-      <div class="mh-row">
-        <div class="mh-title">Xin chào, Thầy Hạ Tuấn Anh 👋</div>
-        <div class="mh-badge">⚛ Vật Lý</div>
-      </div>
-      <div class="mh-sub">${FILES.length} tài liệu · ${new Date().toLocaleDateString('vi-VN',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
-    </div>
-    <div class="toolbar">
-      <button class="tbtn pri">📤 Tải lên Drive</button>
-      <div class="tb-sep"></div>
-      <button class="tbtn">📄 → PDF</button>
-      <button class="tbtn">📧 Gửi học sinh</button>
-      <button class="tbtn">🖨 In</button>
-      <div class="tb-sep"></div>
-      <button class="tbtn" onclick="openSearch()">🔍 Tìm nhanh (Ctrl+K)</button>
-    </div>
-    <div class="content">
-      <div class="stats">
-        <div class="stat"><div class="stat-n">${FILES.length}</div><div class="stat-l">Tổng tài liệu</div></div>
-        <div class="stat"><div class="stat-n">${deThi.length}</div><div class="stat-l">Đề thi các loại</div></div>
-        <div class="stat"><div class="stat-n">${slides.length}</div><div class="stat-l">Slide PPT</div></div>
-        <div class="stat"><div class="stat-n">${nuocRut.length}</div><div class="stat-l">Nước rút THPT</div></div>
-      </div>
-      <div class="sec-hd">Vừa cập nhật</div>
-      <div class="doc-grid">${FILES.slice(0,6).map(fileCard).join('')}</div>
-      <div class="sec-hd">Đề thi gần nhất</div>
-      <div class="doc-list">${deThi.slice(0,5).map(fileRow).join('')}</div>
-      <div class="sec-hd">Slide thuyết trình</div>
-      <div class="doc-list">${slides.slice(0,4).map(fileRow).join('')}</div>
-    </div>`
+function openFile(id){
+  const f=FILES.find(x=>x.id===id)
+  if(!f)return
+  if(f.webViewLink){window.open(f.webViewLink,'_blank');return}
+  if(isDemo){alert('Demo mode — khi đăng nhập Drive thật, file mở ngay trong Google Docs!');return}
 }
 
-const PAGE_TITLES = {
+const PAGE_TITLES={
   lop10:'Tài liệu Lớp 10',lop11:'Tài liệu Lớp 11',lop12:'Tài liệu Lớp 12',
   'co-hoc':'Cơ học','nhiet-hoc':'Nhiệt học','dien-hoc':'Điện học',
   'quang-hoc':'Quang học','dao-dong':'Dao động - Sóng','hat-nhan':'Hạt nhân',
@@ -477,153 +636,145 @@ const PAGE_TITLES = {
   recent:'Gần đây',pinned:'Đã ghim'
 }
 
-function renderList(page) {
-  const files = getFiles(page)
-  const title = PAGE_TITLES[page] || page
-  const content = files.length===0
-    ? `<div class="empty">
-        <div class="empty-icon">🔍</div>
-        <h3>Chưa có tài liệu</h3>
-        <p>Thầy đặt tên file đúng format để AI nhận diện tự động.</p>
-        <div class="empty-hint">
-          <strong>Ví dụ tên file:</strong><br>
-          📝 De_thi_HK1_VatLy_L10.docx<br>
-          📊 Slide_NhietHoc_Lop10.pptx<br>
-          🏆 NuocRut_THPT_so12_L12.pdf<br>
-          💻 De_online_tuan20_L11.docx
-        </div>
-      </div>`
-    : (viewMode==='grid'
-        ? `<div class="doc-grid">${files.map(fileCard).join('')}</div>`
-        : `<div class="doc-list">${files.map(fileRow).join('')}</div>`)
-
+function renderDashboard(){
+  const dt=FILES.filter(f=>f.tags.some(t=>['Học kì','Giữa kì','Khảo sát','Theo tháng','Online','Nước rút'].includes(t.l)))
+  const sl=FILES.filter(f=>f.tags.some(t=>t.l==='Slide PPT'))
+  const nr=FILES.filter(f=>f.tags.some(t=>t.l==='Nước rút'))
   return `
     <div class="mhead">
       <div class="mh-row">
-        <div class="mh-title">${title}</div>
-        <div class="mh-badge">${files.length} file</div>
+        <div class="mh-title">Xin chào, Thầy Hạ Tuấn Anh 👋</div>
+        <div class="mh-badge">⚛ Vật Lý</div>
       </div>
+      <div class="mh-sub">${FILES.length} tài liệu · ${new Date().toLocaleDateString('vi-VN',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
+    </div>
+    <div class="toolbar">
+      <button class="tbtn pri" onclick="showFolderPicker()">📂 Chọn thư mục Drive</button>
+      <div class="tb-sep"></div>
+      <button class="tbtn" onclick="loadDriveFiles()">⟳ Làm mới</button>
+      <button class="tbtn" onclick="openSearch()">🔍 Tìm nhanh (Ctrl+K)</button>
+    </div>
+    <div class="content">
+      <div class="stats">
+        <div class="stat"><div class="stat-n">${FILES.length}</div><div class="stat-l">Tổng tài liệu</div></div>
+        <div class="stat"><div class="stat-n">${dt.length}</div><div class="stat-l">Đề thi</div></div>
+        <div class="stat"><div class="stat-n">${sl.length}</div><div class="stat-l">Slide PPT</div></div>
+        <div class="stat"><div class="stat-n">${nr.length}</div><div class="stat-l">Nước rút THPT</div></div>
+      </div>
+      ${FILES.length>0?`
+        <div class="sec-hd">Vừa cập nhật</div>
+        <div class="doc-grid">${FILES.slice(0,6).map(fileCard).join('')}</div>
+        ${dt.length>0?`<div class="sec-hd">Đề thi gần nhất</div><div class="doc-list">${dt.slice(0,4).map(fileRow).join('')}</div>`:''}
+        ${sl.length>0?`<div class="sec-hd">Slide thuyết trình</div><div class="doc-list">${sl.slice(0,3).map(fileRow).join('')}</div>`:''}
+      `:`<div class="empty">
+        <div class="empty-icon">📂</div>
+        <h3>Chưa có tài liệu</h3>
+        <p>Bấm "Chọn thư mục Drive" để chọn thư mục tài liệu Vật Lý của Thầy.</p>
+        <div class="empty-hint">
+          <strong>Đặt tên file để AI nhận diện:</strong><br>
+          📝 De_thi_HK1_VatLy_L10.docx<br>
+          📊 Slide_NhietHoc_Lop10.pptx<br>
+          🏆 NuocRut_THPT_so12_L12.pdf
+        </div>
+      </div>`}
+    </div>`
+}
+
+function renderList(page){
+  const files=getFiles(page)
+  const title=PAGE_TITLES[page]||page
+  const body=files.length===0
+    ?`<div class="empty"><div class="empty-icon">🔍</div><h3>Chưa có tài liệu</h3><p>Đặt tên file đúng format để AI phân loại tự động.</p></div>`
+    :(viewMode==='grid'
+      ?`<div class="doc-grid">${files.map(fileCard).join('')}</div>`
+      :`<div class="doc-list">${files.map(fileRow).join('')}</div>`)
+  return `
+    <div class="mhead">
+      <div class="mh-row"><div class="mh-title">${title}</div><div class="mh-badge">${files.length} file</div></div>
       <div class="mh-sub">Vật Lý · Thầy Hạ Tuấn Anh</div>
     </div>
     <div class="toolbar">
-      <button class="tbtn pri">📤 Tải lên</button>
+      <button class="tbtn pri">📤 Tải lên Drive</button>
       <div class="tb-sep"></div>
-      <button class="tbtn">📄 → PDF</button>
       <button class="tbtn">📧 Gửi học sinh</button>
       <button class="tbtn">🖨 In</button>
-      <button class="tbtn">📋 Gộp PDF</button>
       <div class="tb-sep"></div>
       <button class="view-btn ${viewMode==='list'?'on':''}" onclick="setView('list')">≡</button>
       <button class="view-btn ${viewMode==='grid'?'on':''}" onclick="setView('grid')">⊞</button>
     </div>
-    <div class="content">${content}</div>`
+    <div class="content">${body}</div>`
 }
 
-// ══ NAVIGATION ══════════════════════════════════════════════════════════════
-function navigate(el) {
+function navigate(el){
   document.querySelectorAll('.nav,.tree').forEach(n=>n.classList.remove('on'))
   el.classList.add('on')
-  currentPage = el.dataset.page
+  currentPage=el.dataset.page
   render()
 }
-
-function render() {
-  const main = document.getElementById('main-content')
-  main.innerHTML = currentPage==='dashboard' ? renderDashboard() : renderList(currentPage)
+function render(){
+  document.getElementById('main-content').innerHTML=
+    currentPage==='dashboard'?renderDashboard():renderList(currentPage)
 }
+function setView(v){viewMode=v;render()}
 
-function setView(v) { viewMode=v; render() }
-
-function openFile(id) {
-  const f = FILES.find(x=>x.id===id)
-  if (!f) return
-  alert('📂 Mở file: '+f.name+'\n\nKhi kết nối Google Drive thật, file sẽ mở trong Google Docs / Preview ngay lập tức.')
-}
-
-function refreshFiles() {
-  document.getElementById('sync-text').textContent = 'Đang đồng bộ...'
-  setTimeout(()=>{
-    document.getElementById('sync-text').textContent = FILES.length+' tài liệu · vừa xong'
-    updateCounts()
-  }, 1200)
-}
-
-// ══ SEARCH ══════════════════════════════════════════════════════════════════
-let searchFocus = 0
-let searchResults = []
-
-function openSearch() {
-  document.getElementById('search-modal').classList.add('open')
-  setTimeout(()=>document.getElementById('search-input').focus(),50)
-}
-function closeSearch() {
-  document.getElementById('search-modal').classList.remove('open')
-  document.getElementById('search-input').value=''
-  document.getElementById('search-results').innerHTML='<div class="sempty">Gõ tên file để tìm kiếm tức thì</div>'
-}
-function closeSearchOutside(e) { if(e.target===document.getElementById('search-modal')) closeSearch() }
-
-function doSearch(q) {
-  const box = document.getElementById('search-results')
-  if (!q.trim()) { box.innerHTML='<div class="sempty">Gõ tên file để tìm kiếm tức thì</div>'; return }
-  searchResults = FILES.filter(f=>f.name.toLowerCase().includes(q.toLowerCase())).slice(0,20)
-  searchFocus = 0
-  if (!searchResults.length) { box.innerHTML=`<div class="sempty">Không tìm thấy "${q}"</div>`; return }
-  box.innerHTML = searchResults.map((f,i)=>`
+// ══ SEARCH ═════════════════════════════════════════════════════════════════
+let sFocus=0, sRes=[]
+function openSearch(){document.getElementById('search-modal').classList.add('open');setTimeout(()=>document.getElementById('search-input').focus(),50)}
+function closeSearch(){document.getElementById('search-modal').classList.remove('open');document.getElementById('search-input').value='';document.getElementById('search-results').innerHTML='<div class="sempty">Gõ tên file để tìm kiếm tức thì</div>'}
+function closeSearchOutside(e){if(e.target===document.getElementById('search-modal'))closeSearch()}
+function doSearch(q){
+  const box=document.getElementById('search-results')
+  if(!q.trim()){box.innerHTML='<div class="sempty">Gõ tên file để tìm kiếm tức thì</div>';return}
+  sRes=FILES.filter(f=>f.name.toLowerCase().includes(q.toLowerCase())).slice(0,20)
+  sFocus=0
+  if(!sRes.length){box.innerHTML=`<div class="sempty">Không tìm thấy "${q}"</div>`;return}
+  box.innerHTML=sRes.map((f,i)=>`
     <div class="sitem${i===0?' focused':''}" id="si-${i}" onclick="openFile('${f.id}');closeSearch()">
       <div class="sitem-icon">${EXT_ICON[f.ext]||'📄'}</div>
-      <div style="flex:1;min-width:0">
-        <div class="sitem-name">${f.name}</div>
-        <div class="sitem-sub">${f.folder} · ${f.ext}</div>
-      </div>
+      <div style="flex:1;min-width:0"><div class="sitem-name">${f.name}</div><div class="sitem-sub">${f.folder} · ${f.ext}</div></div>
       <div style="display:flex;gap:3px">${tagsHTML(f.tags)}</div>
     </div>`).join('')
 }
-
-function searchKey(e) {
-  if (e.key==='Escape') { closeSearch(); return }
-  if (e.key==='ArrowDown') { searchFocus=Math.min(searchFocus+1,searchResults.length-1); highlightSearch() }
-  if (e.key==='ArrowUp')   { searchFocus=Math.max(searchFocus-1,0); highlightSearch() }
-  if (e.key==='Enter' && searchResults[searchFocus]) { openFile(searchResults[searchFocus].id); closeSearch() }
+function searchKey(e){
+  if(e.key==='Escape'){closeSearch();return}
+  if(e.key==='ArrowDown'){sFocus=Math.min(sFocus+1,sRes.length-1);highlightS()}
+  if(e.key==='ArrowUp'){sFocus=Math.max(sFocus-1,0);highlightS()}
+  if(e.key==='Enter'&&sRes[sFocus]){openFile(sRes[sFocus].id);closeSearch()}
 }
-function highlightSearch() {
-  document.querySelectorAll('.sitem').forEach((el,i)=>el.classList.toggle('focused',i===searchFocus))
-  document.getElementById('si-'+searchFocus)?.scrollIntoView({block:'nearest'})
-}
-
-// ══ COUNTS ══════════════════════════════════════════════════════════════════
-function updateCounts() {
-  const cnt = (id,page) => { const el=document.getElementById(id); if(el) el.textContent=getFiles(page).length }
-  document.getElementById('cnt-all').textContent = FILES.length
-  cnt('cnt-l10','lop10'); cnt('cnt-l11','lop11'); cnt('cnt-l12','lop12')
-  cnt('cnt-co','co-hoc'); cnt('cnt-nhiet','nhiet-hoc'); cnt('cnt-dien','dien-hoc')
-  cnt('cnt-quang','quang-hoc'); cnt('cnt-dao','dao-dong'); cnt('cnt-hat','hat-nhan')
-  cnt('cnt-hk','de-hk'); cnt('cnt-gk','de-gk'); cnt('cnt-ks','de-ks')
-  cnt('cnt-thang','de-thang'); cnt('cnt-online','de-online'); cnt('cnt-nr','de-nuoc-rut')
-  cnt('cnt-slide','slide')
+function highlightS(){
+  document.querySelectorAll('.sitem').forEach((el,i)=>el.classList.toggle('focused',i===sFocus))
+  document.getElementById('si-'+sFocus)?.scrollIntoView({block:'nearest'})
 }
 
-// ══ AUTH ════════════════════════════════════════════════════════════════════
-function loginGoogle() {
-  alert('🚀 Tính năng đăng nhập Google Drive thật sẽ hoạt động sau khi deploy lên Vercel.\n\nBây giờ hãy dùng chế độ Demo để xem toàn bộ tính năng!')
-}
-function loginDemo() {
-  document.getElementById('login-screen').classList.remove('show')
-  loggedIn = true
-  document.getElementById('sync-text').textContent = FILES.length+' tài liệu (Demo)'
-  updateCounts()
-  render()
+// ══ COUNTS ═════════════════════════════════════════════════════════════════
+function updateCounts(){
+  const c=(id,pg)=>{const el=document.getElementById(id);if(el)el.textContent=getFiles(pg).length}
+  document.getElementById('cnt-all').textContent=FILES.length
+  c('cnt-l10','lop10');c('cnt-l11','lop11');c('cnt-l12','lop12')
+  c('cnt-co','co-hoc');c('cnt-nhiet','nhiet-hoc');c('cnt-dien','dien-hoc')
+  c('cnt-quang','quang-hoc');c('cnt-dao','dao-dong');c('cnt-hat','hat-nhan')
+  c('cnt-hk','de-hk');c('cnt-gk','de-gk');c('cnt-ks','de-ks')
+  c('cnt-thang','de-thang');c('cnt-online','de-online');c('cnt-nr','de-nuoc-rut')
+  c('cnt-slide','slide')
 }
 
-// ══ KEYBOARD SHORTCUTS ══════════════════════════════════════════════════════
-document.addEventListener('keydown', e => {
-  if ((e.ctrlKey||e.metaKey) && e.key==='k') { e.preventDefault(); openSearch() }
-  if (e.key==='Escape') closeSearch()
+// ══ KEYBOARD SHORTCUT ══════════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openSearch()}
+  if(e.key==='Escape')closeSearch()
 })
 
-// ══ INIT ═════════════════════════════════════════════════════════════════════
-updateCounts()
+// ══ INIT ═══════════════════════════════════════════════════════════════════
 render()
+
+// Load Google APIs
+window.gapiLoaded = gapiLoaded
+window.gsiLoaded  = gsiLoaded
 </script>
+
+<!-- Load Google API scripts -->
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gsiLoaded()"></script>
+
 </body>
 </html>
