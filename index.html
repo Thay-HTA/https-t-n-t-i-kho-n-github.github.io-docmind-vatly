@@ -324,7 +324,7 @@ html,body{height:100%;overflow:hidden}
 <script>
 // ══ CONFIG — Client ID của Thầy ════════════════════════════════════════════
 const CLIENT_ID = '182412193130-vvfge5ifsfk5ukdectl3ittk48vsqg2j.apps.googleusercontent.com'
-const SCOPES = 'https://www.googleapis.com/auth/drive.readonly'
+const SCOPES = 'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly'
 const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'
 
 // ══ STATE ══════════════════════════════════════════════════════════════════
@@ -463,19 +463,73 @@ async function showFolderPicker() {
   const list = document.getElementById('folder-list')
   list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted)">Đang tải danh sách thư mục...</div>'
   try {
+    // Thu hoi token cu, yeu cau lai voi scope day du
+    const token = gapi.client.getToken()
+    if (!token) { tokenClient.requestAccessToken({prompt:''}); return }
+
     const resp = await gapi.client.drive.files.list({
-      q: "mimeType='application/vnd.google-apps.folder' and trashed=false",
+      q: "mimeType='application/vnd.google-apps.folder' and trashed=false and 'root' in parents",
       fields: 'files(id,name)',
-      pageSize: 30,
+      pageSize: 50,
       orderBy: 'name'
     })
     const folders = resp.result.files || []
-    list.innerHTML = folders.map(f=>`
-      <div class="folder-item" id="fi-${f.id}" onclick="selectFolder('${f.id}','${f.name.replace(/'/g,"\\'")}')">
-        <span style="font-size:20px">📁</span>
-        <div class="folder-name">${f.name}</div>
-      </div>`).join('') || '<div style="padding:12px;color:var(--muted);font-size:12px">Không tìm thấy thư mục nào</div>'
-  } catch(_) { list.innerHTML = '<div style="padding:12px;color:red;font-size:12px">Lỗi tải thư mục</div>' }
+
+    if (folders.length === 0) {
+      // Thu lay tat ca thu muc khong chi root
+      const resp2 = await gapi.client.drive.files.list({
+        q: "mimeType='application/vnd.google-apps.folder' and trashed=false",
+        fields: 'files(id,name)',
+        pageSize: 50,
+        orderBy: 'name'
+      })
+      const allFolders = resp2.result.files || []
+      list.innerHTML = allFolders.map(f=>`
+        <div class="folder-item" id="fi-${f.id}" onclick="selectFolder('${f.id}','${f.name.replace(/'/g,"\'")}')">
+          <span style="font-size:20px">📁</span>
+          <div class="folder-name">${f.name}</div>
+        </div>`).join('') || `<div style="padding:14px;font-size:12px;color:var(--muted)">
+          Drive của Thầy chưa có thư mục nào.<br>
+          <button onclick="useDriveRoot()" style="margin-top:8px;padding:6px 12px;background:var(--s600);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px">Dùng toàn bộ Drive</button>
+        </div>`
+      return
+    }
+
+    list.innerHTML = `<div style="padding:6px 0 8px;font-size:11px;color:var(--muted)">Chọn thư mục chứa tài liệu Vật Lý của Thầy:</div>` +
+      folders.map(f=>`
+        <div class="folder-item" id="fi-${f.id}" onclick="selectFolder('${f.id}','${f.name.replace(/'/g,"\'")}')">
+          <span style="font-size:20px">📁</span>
+          <div class="folder-name">${f.name}</div>
+        </div>`).join('')
+  } catch(err) {
+    console.error('Folder error:', err)
+    if (err.status === 403 || err.status === 401) {
+      list.innerHTML = `<div style="padding:14px;font-size:12px;color:#991B1B;line-height:1.7">
+        Chưa có quyền đọc Drive.<br>
+        <button onclick="relogin()" style="margin-top:8px;padding:6px 12px;background:var(--s600);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px">Đăng nhập lại để cấp quyền</button>
+      </div>`
+    } else {
+      list.innerHTML = `<div style="padding:14px;font-size:12px;color:#991B1B">Lỗi: ${err.message||'Không xác định'}<br>
+        <button onclick="useDriveRoot()" style="margin-top:8px;padding:6px 12px;background:var(--s600);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px">Dùng toàn bộ Drive</button>
+      </div>`
+    }
+  }
+}
+
+function relogin() {
+  closeFolderModal()
+  localStorage.removeItem('dm-token')
+  gapi.client.setToken(null)
+  tokenClient.requestAccessToken({prompt:'consent'})
+}
+
+function useDriveRoot() {
+  selectedFolderId = null
+  selectedFolderName = 'Toàn bộ Drive'
+  localStorage.removeItem('dm-folder-id')
+  localStorage.setItem('dm-folder-name','Toàn bộ Drive')
+  closeFolderModal()
+  loadDriveFiles()
 }
 function selectFolder(id, name) {
   document.querySelectorAll('.folder-item').forEach(el=>el.classList.remove('on'))
